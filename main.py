@@ -7,31 +7,31 @@ from urllib.request import urlopen
 
 class FenixApp(App):
     def build(self):
-        layout = BoxLayout(orientation='vertical', padding=30, spacing=15)
-        
-        self.status_label = Label(text="=== Fenix APK ===", font_size=20)
+        layout = BoxLayout(orientation='vertical')
+
+        self.status_label = Label(text="=== Fenix App ===")
         layout.add_widget(self.status_label)
-        
-        self.pass_input = TextInput(hint_text="Escribe la contraseña aquí", password=True, multiline=False)
+
+        self.pass_input = TextInput(hint_text="Escribe la clave aquí")
         layout.add_widget(self.pass_input)
-        
-        btn = Button(text="INGRESAR Y DESCIFRAR", background_color=(0.1, 0.7, 0.1, 1), font_size=18)
+
+        btn = Button(text="INGRESAR Y DESCIFRAR")
         btn.bind(on_press=self.ejecutar)
         layout.add_widget(btn)
-        
+
         return layout
 
     def ejecutar(self, instance):
         if self.pass_input.text == "JT":
-            self.status_label.text = "Clave correcta. Descargando servidores..."
+            self.status_label.text = "Clave correcta"
             try:
                 url = "https://githubusercontent.com"
                 response = urlopen(url)
-                self.status_label.text = "¡Logrado! Servidores descargados con éxito."
+                self.status_label.text = "¡Logrado con éxito!"
             except Exception as e:
-                self.status_label.text = "Error al conectar con internet."
+                self.status_label.text = "Error al conectar"
         else:
-            self.status_label.text = "Contraseña Incorrecta. Intenta de nuevo."
+            self.status_label.text = "Clave incorrecta"
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     FenixApp().run()
