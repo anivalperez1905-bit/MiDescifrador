@@ -9,11 +9,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Instalar dependencias del sistema
+      - name: Instalar dependencias
         run: |
           sudo apt-get update -y
           sudo apt-get install -y build-essential git python3-dev python3-pip openjdk-17-jdk \
-            libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev zlib1g-dev
+            libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev zlib1g-dev unzip wget
 
       - name: Instalar Buildozer
         run: |
@@ -22,15 +22,25 @@ jobs:
           python3 -m pip install --user buildozer
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
-      - name: Aceptar licencias de Android
+      - name: Preparar SDK y aceptar licencias
         run: |
-          mkdir -p ~/.android
-          echo "24333f8a63b6825ea9c5514f83c2829b004f1a4b" > ~/.android/repository-1.cfg
-          echo "d9712f16100b41208d658e3e270c896034e46b57" >> ~/.android/repository-1.cfg
+          mkdir -p ~/.buildozer/android/platform
+          cd ~/.buildozer/android/platform
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+          unzip -q commandlinetools-linux-*.zip
+          mkdir -p cmdline-tools/latest
+          mv cmdline-tools/* cmdline-tools/latest/ 2>/dev/null || true
+          export ANDROID_HOME=$HOME/.buildozer/android/platform
+          export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
+          yes | sdkmanager --licenses || true
+          sdkmanager "platforms;android-33" "build-tools;34.0.0" "platform-tools"
 
       - name: Compilar APK
-        run: buildozer android debug
-        timeout-minutes: 45
+        run: |
+          export ANDROID_HOME=$HOME/.buildozer/android/platform
+          export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
+          buildozer android debug
+        timeout-minutes: 60
 
       - name: Subir APK ✅
         uses: actions/upload-artifact@v4
