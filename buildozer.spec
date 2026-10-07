@@ -16,5 +16,5 @@ android.build_tools_version = 34.0.0
 android.permissions = INTERNET, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE
 android.allowBackups = True
 android.wakelock = False
-android.accepts_license = True
+android.accept_all_licenses = True
 android.ndk_api = 21
