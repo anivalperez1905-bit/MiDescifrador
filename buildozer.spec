@@ -1,3 +1,4 @@
+[app]
 title = FenixDecryptor
 package.name = fenixdecryptor
 package.domain = org.fenix
